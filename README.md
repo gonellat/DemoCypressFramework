@@ -1,6 +1,6 @@
 # DemoCypressFramework
 
-This is a personal Cypress-based test automation framework designed as a go-to project for learning, prototyping, and adapting into real-world applications. It follows modern testing practices and includes modular, reusable structures.
+This is the local personal Cypress-based test automation framework designed as a go-to project for learning, prototyping, and adapting into real-world applications. It follows modern testing practices and includes modular, reusable structures.
 
 ## 🚀 Getting Started
 
