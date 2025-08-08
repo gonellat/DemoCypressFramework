@@ -1,6 +1,6 @@
 # DemoCypressFramework
 
-This is a personal Cypress-based test automation framework designed as a go-to project for learning, prototyping, and adapting into real-world applications. It follows modern testing practices and includes modular, reusable structures.
+This is my personal Cypress-based test automation framework designed as a go-to project for learning, prototyping, and adapting into real-world applications. It follows modern testing practices and includes modular, reusable structures.
 
 ## 🚀 Getting Started
 
@@ -88,4 +88,4 @@ npx cypress open                # Launch Cypress Test Runner
 ## 👤 Author
 
 Tim Gonella  
-[GitHub Profile](https://github.com/your-username) *(update with your GitHub link)*
+[GitHub Profile](https://github.com/gonellat) *(update with your GitHub link)*
