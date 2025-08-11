@@ -1,3 +1,25 @@
+# Node modules
 node_modules/
-cypress/videos/
+
+# Cypress output folders
 cypress/screenshots/
+cypress/videos/
+cypress/reports/
+cypress/downloads/
+
+# Environment files (DON'T commit these!)
+.env*
+!.env.sample  # Keep a sample template for collaborators
+
+# VS Code settings
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Optional: lock files (if you don't want to commit them)
+# package-lock.json

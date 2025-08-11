@@ -88,4 +88,4 @@ npx cypress open                # Launch Cypress Test Runner
 ## 👤 Author
 
 Tim Gonella  
-[GitHub Profile](https://github.com/gonellat) *(update with your GitHub link)*
+[GitHub Profile](https://github.com/gonellat)
