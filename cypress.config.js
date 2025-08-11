@@ -1,42 +1,11 @@
 /***********************************************************************************
- * This file is used to store any configuration specific to Cypress.
- * https://docs.cypress.io/guides/references/configuration
- * 
- * Cypress gives you the option to dynamically alter configuration options. 
- * This is helpful when running Cypress in multiple environments and on multiple developer machines.
- * https://docs.cypress.io/guides/references/configuration#Overriding-Options
- * 
- * Overriding Individual Options
- * When running Cypress from the command line you can pass a --config flag to override individual config options.
- * 
- * Specifying an Alternative Config File
- * In the Cypress CLI, you can change which config file Cypress will use with the --config-file flag.
- * 
- * https://docs.cypress.io/guides/guides/environment-variables
- * https://docs.cypress.io/api/cypress-api/env
- * Configuration options can be overridden with environment variables. 
- * export CYPRESS_VIEWPORT_WIDTH=800
- * This is especially useful in Continuous Integration or when working locally. 
- * This gives you the ability to change configuration options without modifying any code or build scripts.
- * 
- * https://docs.cypress.io/guides/references/configuration#Test-Configuration
- * Cypress provides two options to override the configuration while your test are running, 
- * Cypress.config() and suite-specific or test-specific configuration overrides.
- * 
- * Cypress.config()
- * https://docs.cypress.io/api/cypress-api/config
- * You can also override configuration values within your test using Cypress.config().
- * 
- * Test-specific Configuration
- * To apply specific Cypress configuration values to a suite or test, 
- * pass a configuration object to the test or suite function as the second argument.
- * 
+ * Cypress Configuration File (ESM version)
+ * Modern ES Module format with environment-specific .env loading and plugin support
  ***********************************************************************************/
 
-// Import helper to define Cypress config
-const { defineConfig } = require("cypress");
-const dotenv = require("dotenv");
-const fs = require("fs");
+import { defineConfig } from 'cypress';
+import dotenv from 'dotenv';
+import fs from 'fs';
 
 /**
  * Load .env.{envName} file into Cypress.env()
@@ -55,54 +24,52 @@ function getEnvConfig(envName) {
     }
 }
 
-module.exports = defineConfig({
+export default defineConfig({
     // Global settings
-    defaultCommandTimeout: 6000,            // Timeout for all commands
-    video: true,                             // Record video of test runs
-    screenshotOnRunFailure: true,           // Capture screenshot on test failure
+    defaultCommandTimeout: 6000,
+    video: true,
+    screenshotOnRunFailure: true,
     viewportWidth: 1920,
     viewportHeight: 1080,
-    retries: { runMode: 1 },                 // Retry once in headless mode
-    projectId: "ProjectExample",             // Optional: Cypress Dashboard project ID
+    retries: { runMode: 1 },
+    projectId: 'ProjectExample',
 
-    // Define custom environment variables and default environment
     env: {
-        configEnv: "local",                    // Used to pick .env.{env} file (can be overridden via CLI)
-        url: "https://example.cypress.io/"     // Fallback URL in case no env file is used
+        configEnv: 'local',
+        url: 'https://example.cypress.io/'
     },
 
-    // Configure Mochawesome reporter for HTML/JSON reporting
-    reporter: "cypress-mochawesome-reporter",
+    // Reporting
+    reporter: 'cypress-mochawesome-reporter',
     reporterOptions: {
-        reportDir: "cypress/reports/html",     // Output directory for reports
-        overwrite: false,                      // Do not overwrite old reports
+        reportDir: 'cypress/reports/html',
+        overwrite: false,
         html: true,
         json: true
     },
 
-    // E2E test runner-specific config
     e2e: {
         /**
          * Node event hooks — allows plugins or dynamic env loading.
          * Runs before any test specs are executed.
          */
-        setupNodeEvents(on, config) {
+        async setupNodeEvents(on, config) {
             const environment = config.env.configEnv || 'local';
             const loadedEnv = getEnvConfig(environment);
 
             config.env = {
                 ...config.env,
-                ...loadedEnv // Merge .env.{env} into Cypress.env
+                ...loadedEnv
             };
 
-            // Register mochawesome plugin
-            require('cypress-mochawesome-reporter/plugin')(on);
+            // Dynamically import the plugin (because it's CommonJS)
+            const mochawesome = await import('cypress-mochawesome-reporter/plugin');
+            mochawesome.default(on);
 
             return config;
         },
 
-        // Define the test spec pattern and support file
-        specPattern: "cypress/e2e/**/*.cy.{js,ts}",
-        supportFile: "cypress/support/e2e.js"
+        specPattern: 'cypress/e2e/**/*.cy.{js,ts}',
+        supportFile: 'cypress/support/e2e.js'
     }
 });

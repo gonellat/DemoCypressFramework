@@ -8,7 +8,7 @@
     "type": "git",
     "url": "git+https://github.com/gonellat/DemoCypressFramework.git"
   },
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "test": "npx cypress run",
     "headTest": "npm run test --headed",
