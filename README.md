@@ -62,7 +62,7 @@ Example:
 npx cypress run --env configEnv=local
 ```
 
-> 🛡️ This approach keeps your `.env` files flexible for local use and secure for CI pipelines, with no need to commit sensitive values.
+> 🛡️ This approach keeps the `.env` files flexible for local use and secure for CI pipelines, with no need to commit sensitive values.
 
 ---
 
