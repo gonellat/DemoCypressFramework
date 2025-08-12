@@ -19,6 +19,53 @@ This is a personal Cypress-based test automation framework designed as a go-to p
 npm install
 ```
 
+## 🔑 Environment Config
+
+This framework supports dynamic environment loading for different stages like `local`, `stage`, or `prod`.
+
+### 🧪 Local Development
+
+Environment variables are loaded from files in the `env/` folder (not committed to version control):
+
+- `env/.env.local`
+- `env/.env.stage`
+
+These files follow the format:
+
+```env
+url=https://automationexercise.com
+```
+
+Cypress uses the `--env configEnv=local` flag to load the correct file.
+
+---
+
+### 🚀 GitHub Actions (CI)
+
+In CI, `.env` files are not used directly.
+
+Instead, their contents are stored securely in **GitHub Secrets**:
+
+- `ENV_LOCAL` → used as `env/.env.local`
+- `ENV_STAGE` → used as `env/.env.stage`
+
+These are dynamically written to disk during the workflow based on the selected `configEnv`.
+
+### 🔄 How It Works Internally
+
+- The `cypress.config.js` file detects the environment via `config.env.configEnv`
+- Then it loads the appropriate `.env` file from disk (in local dev) or from secrets (in CI)
+
+Example:
+
+```bash
+npx cypress run --env configEnv=local
+```
+
+> 🛡️ This approach keeps your `.env` files flexible for local use and secure for CI pipelines, with no need to commit sensitive values.
+
+---
+
 ### Run Cypress Test Runner (UI)
 
 ```bash
@@ -59,7 +106,6 @@ env/
 ├── .env.local                  # Local environment variables (e.g. CYPRESS_url)
 cypress.config.js               # Cypress + plugin config
 package.json                    # Project metadata + scripts
-
 ```
 
 ---
@@ -68,26 +114,15 @@ package.json                    # Project metadata + scripts
 
 - ✅ Cypress test runner (headed/headless/GUI)
 - ✅ Multi-browser support (Chrome + Edge)
-- ✅ Custom commands: cy.captureStep(), cy.clearSession(), cy.logStep()
-- ✅ Page Object Model with shared BasePage
-- ✅ Dynamic .env file loading with environment validation
+- ✅ Custom commands: `cy.captureStep()`, `cy.clearSession()`, `cy.logStep()`
+- ✅ Page Object Model with shared `BasePage`
+- ✅ Dynamic `.env` file loading with environment validation
 - ✅ Faker-based test data generation
-- ✅ Type-safe command IntelliSense via commands.d.ts
+- ✅ Type-safe command IntelliSense via `commands.d.ts`
 - ✅ Mochawesome HTML + JSON reporting
 - ✅ Shared linting config with ESLint 9 (Flat Config)
 - ✅ Prettier integration for consistent code formatting
 - ✅ Custom ESLint rule to detect commented-out code
-
----
-
-## 🔑 Environment Config
-
-Supports dynamic environment loading using --env configEnv=local|stage|prod.
-Your .env.local file (located in /env/) should include:
-
-```bash
-url=https://automationexercise.com
-```
 
 ---
 
@@ -107,22 +142,25 @@ npm run fix:all                     # Lint, format, and stage code (for pre-comm
 
 ---
 
-🧹 Linting, Formatting & Code Quality
+## 🧹 Linting, Formatting & Code Quality
+
 This project uses a fully configured ESLint 9 Flat Config setup with:
 
-- eslint-plugin-cypress
-- eslint-plugin-jsdoc
-- eslint-plugin-prettier
-- A local custom plugin: eslint-plugin-no-commented-code
+- `eslint-plugin-cypress`
+- `eslint-plugin-jsdoc`
+- `eslint-plugin-prettier`
+- A local custom plugin: `eslint-plugin-no-commented-code`
 - Prettier integration with auto-fix on save in VS Code
 
-🧠 Custom Rule: no-commented-code
-Flags any code that’s been commented out (e.g., // const x = 1;) to keep the test files clean and readable.
+### 🧠 Custom Rule: no-commented-code
 
-🛠 Editor Setup
-In .vscode/settings.json:
+Flags any code that’s been commented out (e.g., `// const x = 1;`) to keep the test files clean and readable.
 
-```bash
+### 🛠 Editor Setup
+
+In `.vscode/settings.json`:
+
+```json
 {
   "eslint.validate": ["javascript", "javascriptreact"],
   "eslint.useFlatConfig": true,
@@ -138,11 +176,39 @@ In .vscode/settings.json:
 
 ---
 
+### 🐶 Git Hooks with Husky
+
+This project uses **[Husky](https://typicode.github.io/husky)** to manage Git hooks.
+
+**What it does:**
+
+- Automatically runs checks (like `lint`, `format`, or tests) **before you commit code**
+- Prevents bad code or unformatted files from getting into the repo
+
+**Example Git hook:**
+
+```bash
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npm run fix:all
+```
+
+✅ This runs `npm run fix:all` every time you commit, which:
+
+- Lints the code
+- Formats it with Prettier
+- Stages cleaned files for commit
+
+Husky hooks live in the `.husky/` folder and are triggered automatically by Git.
+
+---
+
 ## 📄 Reporting
 
 - 📊 Mochawesome HTML reports auto-generated
 - 🎥 Screenshots and videos included on failures
-- 💬 Step-level logs using cy.captureStep()
+- 💬 Step-level logs using `cy.captureStep()`
 
 ---
 
