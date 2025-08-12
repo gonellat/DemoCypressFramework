@@ -58,6 +58,15 @@ cypress-e2e:
       - name: Install dependencies
         run: npm ci
 
+      - name: "Write .env file from GitHub Secret"
+        run: |
+          mkdir -p env
+          if [[ "${{ inputs.environment }}" == "local" ]]; then
+            echo "${{ secrets.ENV_LOCAL }}" > env/.env.local
+          elif [[ "${{ inputs.environment }}" == "stage" ]]; then
+            echo "${{ secrets.ENV_STAGE }}" > env/.env.stage
+          fi
+
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
