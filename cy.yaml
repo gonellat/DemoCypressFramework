@@ -1,0 +1,80 @@
+name: Cypress E2E Tests (Manual Trigger)
+
+on:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: "Browser to run Cypress tests on"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - all
+          - chrome
+          - firefox
+          - electron
+
+      environment:
+        description: "Target environment (.env) to load"
+        required: true
+        default: "local"
+        type: choice
+        options:
+          - local
+          - stage
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: ESLint Check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm ci
+      - run: npm run lint
+
+cypress-e2e:
+  needs: lint
+  runs-on: ubuntu-latest
+  strategy:
+    matrix:
+      include: ${{ fromJson(inputs.browser == 'all'
+        && '[{"browser":"chrome"},{"browser":"firefox"},{"browser":"electron"}]'
+        || format('[{"browser":"%s"}]', inputs.browser)) }}
+
+    name: Cypress on ${{ matrix.browser }} – ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: ${{ matrix.browser }}
+          config-env: ${{ inputs.environment }}
+          # 👉 To run a specific test file instead of all:
+          # spec: cypress/e2e/smoke/login.cy.js
+
+          # 👉 To filter tests by tag using grep (requires your grep plugin setup):
+          # grep: '@smoke'
+        env:
+          CYPRESS_configEnv: ${{ inputs.environment }}
+          CI: true
+
+      - name: Upload Mochawesome Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: mochawesome-${{ matrix.browser }}-${{ inputs.environment }}
+          path: cypress/reports/html
