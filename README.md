@@ -69,13 +69,12 @@ package.json                    # Project metadata + scripts
 - ✅ Custom commands: cy.captureStep(), cy.clearSession(), cy.logStep()
 - ✅ Page Object Model with shared BasePage
 - ✅ Dynamic .env file loading with environment validation
+- ✅ Faker-based test data generation
 - ✅ Type-safe command IntelliSense via commands.d.ts
 - ✅ Mochawesome HTML + JSON reporting
-- ⬜ Parallel execution in CI/CD (coming soon)
-- ⬜ GitHub Actions integration
-- ⬜ Dockerized execution environment
-- ⬜ SonarQube / linting integration
-- ⬜ XML/Excel test data (exploratory)
+- ✅ Shared linting config with ESLint 9 (Flat Config)
+- ✅ Prettier integration for consistent code formatting
+- ✅ Custom ESLint rule to detect commented-out code
 
 ---
 
@@ -94,11 +93,46 @@ url=https://automationexercise.com
 
 ```bash
 npm run cypress:open                # Launch Cypress Test Runner UI
-npm run test:headed                 # Run tests in Chrome with video
-npm run test:edge                   # Run tests in Edge with video
-npm run test:parallel:browsers      # Run Chrome + Edge in parallel
+npm run test:headed                 # Run tests in Chrome (headed)
+npm run test:edge                   # Run tests in Edge (headed)
+npm run test:parallel:browsers      # Chrome + Edge parallel run
 npm run merge:reports               # Merge Mochawesome JSONs into HTML report
+npm run lint                        # Lint all project files
+npm run lint:fix                    # Auto-fix lint errors where possible
+npm run format                      # Format code using Prettier
+npm run fix:all                     # Lint, format, and stage code (for pre-commit)
 ```
+
+---
+
+🧹 Linting, Formatting & Code Quality
+This project uses a fully configured ESLint 9 Flat Config setup with:
+
+- eslint-plugin-cypress
+- eslint-plugin-jsdoc
+- eslint-plugin-prettier
+- A local custom plugin: eslint-plugin-no-commented-code
+- Prettier integration with auto-fix on save in VS Code
+
+🧠 Custom Rule: no-commented-code
+Flags any code that’s been commented out (e.g., // const x = 1;) to keep the test files clean and readable.
+
+🛠 Editor Setup
+In .vscode/settings.json:
+
+```bash
+{
+  "eslint.validate": ["javascript", "javascriptreact"],
+  "eslint.useFlatConfig": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always"
+  },
+  "editor.formatOnSave": true,
+  "prettier.requireConfig": true
+}
+```
+
+🚀 Live linting in Problems tab + auto-fix on save
 
 ---
 
@@ -123,10 +157,9 @@ npm run merge:reports               # Merge Mochawesome JSONs into HTML report
 - ⬜ Add GitHub Actions pipeline with matrix browser support
 - ⬜ Docker container for local or CI use
 - ⬜ Environment fallback chaining (.env → .env.local)
-- ⬜ Visual testing integration (e.g., Percy)
+- ⬜ Visual testing integration (e.g., Percy or Happo)
 - ⬜ API testing layer with shared fixtures
 - ⬜ Page factory or test data builders with Faker
-- ⬜ Percy or Happo for visual regression
 
 ---
 
