@@ -6,22 +6,31 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gonellat/DemoCypressFramework.git"
+    "url": "https://github.com/gonellat/DemoCypressFramework.git"
+  },
+  "homepage": "https://github.com/gonellat/DemoCypressFramework#readme",
+  "bugs": {
+    "url": "https://github.com/gonellat/DemoCypressFramework/issues"
   },
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "test:headed": "cls && cypress run --headed --browser chrome --env configEnv=local",
-    "test:parallel:browsers": "concurrently \"npm run test:chrome\" \"npm run test:edge\"",
-    "test:chrome": "cypress run --headed --browser chrome --env configEnv=local --reporter-options reportDir=cypress/reports/chrome",
-    "test:edge": "cypress run --headed --browser edge --env configEnv=local --reporter-options reportDir=cypress/reports/edge",
+    "fix:all": "npm run lint:fix && npm run format && git add .",
+    "format": "prettier \"**/*.{js,json,md}\" --write",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier \"**/*.{js,json,md}\" --write",
-    "fix:all": "npm run lint:fix && npm run format && git add .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test:chrome": "cypress run --headed --browser chrome --env configEnv=local --reporter-options reportDir=cypress/reports/chrome",
+    "test:edge": "cypress run --headed --browser edge --env configEnv=local --reporter-options reportDir=cypress/reports/edge",
+    "test:headed": "cls && cypress run --headed --browser chrome --env configEnv=local",
+    "test:parallel:browsers": "concurrently \"npm run test:chrome\" \"npm run test:edge\""
   },
   "keywords": [],
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@cypress/webpack-preprocessor": "^7.0.0",
     "@faker-js/faker": "^9.9.0",
     "concurrently": "^9.2.0",
