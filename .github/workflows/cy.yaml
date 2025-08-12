@@ -1,4 +1,4 @@
-name: Cypress E2E Tests (Manual Trigger)
+name: Cypress E2E Tests
 
 on:
   workflow_dispatch:
@@ -35,30 +35,23 @@ jobs:
       - run: npm ci
       - run: npm run lint
 
-cypress-e2e:
-  needs: lint
-  runs-on: ubuntu-latest
-  strategy:
-    matrix:
-      include: ${{ fromJson(inputs.browser == 'all'
-        && '[{"browser":"chrome"},{"browser":"firefox"},{"browser":"electron"}]'
-        || format('[{"browser":"%s"}]', inputs.browser)) }}
-
-    name: Cypress on ${{ matrix.browser }} – ${{ inputs.environment }}
-
+  cypress-e2e: # 🛠️ MUST be inside "jobs"
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include: ${{ fromJson(inputs.browser == 'all'
+          && '[{"browser":"chrome"},{"browser":"firefox"},{"browser":"electron"}]'
+          || format('[{"browser":"%s"}]', inputs.browser)) }}
+    name: "Cypress on ${{ matrix.browser }} - ${{ inputs.environment }}"
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
+      - run: npm ci
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: "Write .env file from GitHub Secret"
+      - name: Write .env file from GitHub Secret
         run: |
           mkdir -p env
           if [[ "${{ inputs.environment }}" == "local" ]]; then
@@ -72,11 +65,6 @@ cypress-e2e:
         with:
           browser: ${{ matrix.browser }}
           config-env: ${{ inputs.environment }}
-          # 👉 To run a specific test file instead of all:
-          # spec: cypress/e2e/smoke/login.cy.js
-
-          # 👉 To filter tests by tag using grep (requires your grep plugin setup):
-          # grep: '@smoke'
         env:
           CYPRESS_configEnv: ${{ inputs.environment }}
           CI: true
