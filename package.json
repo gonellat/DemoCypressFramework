@@ -17,17 +17,23 @@
     "node": ">=20"
   },
   "scripts": {
-    "fix:all": "npm run lint:fix && npm run format && git add .",
-    "format": "prettier \"**/*.{js,json,md}\" --write",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "prepare": "husky install",
+    "test": "cypress run",
     "test:chrome": "cypress run --headed --browser chrome --env configEnv=local --reporter-options reportDir=cypress/reports/chrome",
     "test:edge": "cypress run --headed --browser edge --env configEnv=local --reporter-options reportDir=cypress/reports/edge",
     "test:headed": "cls && cypress run --headed --browser chrome --env configEnv=local",
-    "test:parallel:browsers": "concurrently \"npm run test:chrome\" \"npm run test:edge\""
+    "test:parallel:browsers": "concurrently \"npm run test:chrome\" \"npm run test:edge\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier \"**/*.{js,json,md}\" --write",
+    "fix:all": "npm run lint:fix && npm run format && git add .",
+    "prepare": "husky install"
   },
-  "keywords": [],
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix --ignore-path .eslintignore",
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^22.2.0",
     "@commitlint/cli": "^19.8.1",
@@ -45,9 +51,11 @@
     "eslint-plugin-jsdoc": "^52.0.4",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^8.0.0",
+    "lint-staged": "^15.2.2",
     "mocha": "^11.7.1",
     "multiple-cucumber-html-reporter": "^3.9.3",
     "prettier": "^3.6.2",
+    "start-server-and-test": "^2.0.0",
     "typescript": "^5.9.2"
   },
   "cypress-cucumber-preprocessor": {

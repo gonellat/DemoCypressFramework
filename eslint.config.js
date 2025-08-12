@@ -8,6 +8,12 @@ export default [
   js.configs.recommended,
   {
     files: ["**/*.js"],
+    ignores: [
+      "node_modules/",
+      "cypress/videos/",
+      "cypress/screenshots/",
+      "cypress/reports/", // ✅ Exclude all reports (HTML, JSON, etc.)
+    ],
     plugins: {
       cypress,
       jsdoc,
