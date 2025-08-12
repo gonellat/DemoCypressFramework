@@ -2,6 +2,8 @@
 
 This is a personal Cypress-based test automation framework designed as a go-to project for learning, prototyping, and adapting into real-world applications. It follows modern testing practices and includes modular, reusable structures.
 
+![Cypress E2E Tests](https://github.com/gonellat/DemoCypressFramework/actions/workflows/cypress-e2e.yml/badge.svg)
+
 ## 🚀 Getting Started
 
 ### Prerequisites
