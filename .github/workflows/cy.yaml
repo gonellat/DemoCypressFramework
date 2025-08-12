@@ -1,3 +1,28 @@
+name: Cypress E2E Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: "Browser to run Cypress tests on"
+        required: true
+        default: "chrome"
+        type: choice
+        options:
+          - chrome
+          - firefox
+          - electron
+          - all
+
+      environment:
+        description: "Target environment (.env) to load"
+        required: true
+        default: "local"
+        type: choice
+        options:
+          - local
+          - stage
+
 jobs:
   lint:
     name: ESLint Check
@@ -10,7 +35,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
 
-  cypress-e2e: # ✅ Now it's properly indented under `jobs:`
+  cypress-e2e:
     name: "Cypress on ${{ matrix.browser }} - ${{ inputs.environment }}"
     needs: lint
     runs-on: ubuntu-latest
