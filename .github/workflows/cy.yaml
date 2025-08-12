@@ -40,9 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include: ${{ fromJson(inputs.browser == 'all'
-          && '[{"browser":"chrome"},{"browser":"firefox"},{"browser":"electron"}]'
-          || format('[{"browser":"%s"}]', inputs.browser)) }}
+        browser: ${{ inputs.browser == 'all' && fromJson('["chrome", "firefox", "electron"]') || fromJson(format('["%s"]', inputs.browser)) }}
     name: "Cypress on ${{ matrix.browser }} - ${{ inputs.environment }}"
     steps:
       - uses: actions/checkout@v4
