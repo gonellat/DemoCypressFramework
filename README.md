@@ -113,6 +113,7 @@ package.json                    # Project metadata + scripts
 ## 📦 Features (in progress)
 
 - ✅ Cypress test runner (headed/headless/GUI)
+- ✅ GitHub Actions pipeline with matrix browser support
 - ✅ Multi-browser support (Chrome + Edge)
 - ✅ Custom commands: `cy.captureStep()`, `cy.clearSession()`, `cy.logStep()`
 - ✅ Page Object Model with shared `BasePage`
@@ -212,6 +213,15 @@ Husky hooks live in the `.husky/` folder and are triggered automatically by Git.
 
 ---
 
+## 🧾 Configuration Files Overview
+
+- `.nvmrc`: Specifies the Node.js version (used with tools like `nvm`) to ensure devs and CI use Node 22.
+- `.prettierrc`: Defines formatting rules used by Prettier (e.g., tab width, quotes, line endings).
+- `commitlint.config.js`: Enforces conventional commit message formats to keep Git history clean.
+- `eslint-plugins/`: Local directory for custom ESLint rules like `no-commented-code`, allowing enforcement of project-specific style or behavior.
+
+---
+
 ## 📖 Learning Resources
 
 - [Cypress Documentation](https://docs.cypress.io)
@@ -222,7 +232,6 @@ Husky hooks live in the `.husky/` folder and are triggered automatically by Git.
 
 ## 🔧 To Do / Future Enhancements
 
-- ⬜ Add GitHub Actions pipeline with matrix browser support
 - ⬜ Docker container for local or CI use
 - ⬜ Environment fallback chaining (.env → .env.local)
 - ⬜ Visual testing integration (e.g., Percy or Happo)
