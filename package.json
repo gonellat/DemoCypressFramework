@@ -25,12 +25,20 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier \"**/*.{js,json,md}\" --write",
-    "fix:all": "npm run lint:fix && npm run format && git add .",
+    "fix:all": "npm run lint:fix && npm run format",
     "prepare": "husky install"
   },
   "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix --ignore-path .eslintignore",
+    "cypress/e2e/**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "cypress/support/**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.js": [
+      "eslint --fix",
       "prettier --write"
     ]
   },
