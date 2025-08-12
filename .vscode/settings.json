@@ -1,0 +1,17 @@
+{
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact"
+    ],
+    "eslint.useFlatConfig": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "always"
+    },
+    "editor.formatOnSave": true,
+    "prettier.requireConfig": true,
+    "cSpell.words": [
+        "democypressframework",
+        "Gonella",
+        "mochawesome"
+    ]
+}

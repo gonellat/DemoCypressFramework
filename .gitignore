@@ -11,8 +11,10 @@ cypress/downloads/
 .env*
 !.env.sample  # Keep a sample template for collaborators
 
-# VS Code settings
-.vscode/
+# Ignore all VS Code files except settings.json
+.vscode/*
+!.vscode/settings.json
+
 
 # OS files
 .DS_Store
