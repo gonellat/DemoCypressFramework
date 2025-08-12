@@ -62,7 +62,6 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           browser: ${{ matrix.browser }}
-          config-env: ${{ inputs.environment }}
         env:
           CYPRESS_configEnv: ${{ inputs.environment }}
           CI: true
