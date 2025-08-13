@@ -106,6 +106,7 @@ env/
 ├── .env.local                  # Local environment variables (e.g. CYPRESS_url)
 cypress.config.js               # Cypress + plugin config
 package.json                    # Project metadata + scripts
+scripts/                        # 🆕 CLI scripts for locators, etc.
 ```
 
 ---
@@ -124,6 +125,33 @@ package.json                    # Project metadata + scripts
 - ✅ Shared linting config with ESLint 9 (Flat Config)
 - ✅ Prettier integration for consistent code formatting
 - ✅ Custom ESLint rule to detect commented-out code
+- ✅ **CLI utility to auto-generate Page Object files from a web page** (see below)
+
+---
+
+## ⚙️ Locator Extractor Utility
+
+You can auto-generate a Page Object from any page (public or authenticated!) using a custom script:
+
+### 📄 Example
+
+```bash
+node scripts/locator-extractor-links.js https://testautomationu.applitools.com/learningpaths.html --style=cypress --out=cypress/pages/LearningPathsPage.js
+```
+
+### ✅ Output Includes:
+
+- `get linkName()` methods using `cy.contains()` or `cy.get()`
+- `clickLinkName()`, `typeFieldName(value)`, `selectDropdownName(option)` helper methods
+- JSDoc-style comments for all methods
+
+### ✅ Supports:
+
+- Links, buttons, dropdowns, inputs
+- Duplicate handling and naming sanitization (e.g. `2 More` → `twoMore()`)
+- Cleaner method naming and grouped actions
+
+🔹 All generated files are clean and follow Cypress or Playwright styles depending on the `--style` flag.
 
 ---
 
@@ -135,6 +163,8 @@ npm run test:headed                 # Run tests in Chrome (headed)
 npm run test:edge                   # Run tests in Edge (headed)
 npm run test:parallel:browsers      # Chrome + Edge parallel run
 npm run merge:reports               # Merge Mochawesome JSONs into HTML report
+npm run clean:report                # Remove extra screenshots/videos copied into report folder
+npm run test:headed:clean           # "npm run test:headed && npm run clean:report"
 npm run lint                        # Lint all project files
 npm run lint:fix                    # Auto-fix lint errors where possible
 npm run format                      # Format code using Prettier
@@ -237,6 +267,18 @@ Husky hooks live in the `.husky/` folder and are triggered automatically by Git.
 - ⬜ Visual testing integration (e.g., Percy or Happo)
 - ⬜ API testing layer with shared fixtures
 - ⬜ Page factory or test data builders with Faker
+- ⬜ Component Testing
+
+---
+
+## 🐞 Debugging Help
+
+📖 See the [DEBUGGING.md](./DEBUGGING.md) guide for step-by-step techniques:
+
+- Pausing tests to inspect
+- Accessing Cypress `$` and jQuery helpers
+- Chrome DevTools integration
+- `debugger` usage, and more
 
 ---
 

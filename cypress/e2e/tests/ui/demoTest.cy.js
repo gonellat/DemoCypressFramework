@@ -1,7 +1,7 @@
 import HomePage from "../../pages/HomePage.js";
 import LoginSignupPage from "../../pages/LoginSignupPage.js";
 import AccountInfoPage from "../../pages/AccountInfoPage.js";
-import { faker } from "@faker-js/faker";
+import { generateUser } from "../../utils/userGenerator.js";
 
 const homePage = new HomePage();
 const loginSignupPage = new LoginSignupPage();
@@ -12,9 +12,11 @@ const accountInfoPage = new AccountInfoPage();
  */
 describe("Demo Account Signup Test", () => {
   it("should create an account successfully", () => {
-    const randomName = faker.person.firstName();
-    const randomEmail = faker.internet.email();
-    const randomPassword = faker.internet.password();
+    const { name, email, password } = generateUser();
+
+    // cy.then(() => {
+    //   debugger; // eslint-disable-line no-debugger
+    // });
 
     cy.captureStep("Visit home page");
     homePage.visit();
@@ -22,17 +24,17 @@ describe("Demo Account Signup Test", () => {
     cy.captureStep("Verify page title");
     homePage.verifyTitle("Automation Exercise");
 
-    // cy.captureStep('Accept consent');
+    // cy.captureStep("Accept consent");
     // homePage.acceptConsent();
 
     cy.captureStep("Click signup / login");
     homePage.clickSignupLogin();
 
     cy.captureStep("Fill signup form");
-    loginSignupPage.fillSignupForm(randomName, randomEmail);
+    loginSignupPage.fillSignupForm(name, email);
 
     cy.captureStep("Fill account info");
-    accountInfoPage.fillAccountDetails(randomPassword);
+    accountInfoPage.fillAccountDetails(password);
 
     cy.captureStep("Submit account form");
     accountInfoPage.submitForm();

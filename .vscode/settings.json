@@ -12,12 +12,15 @@
   "prettier.requireConfig": true,
   "files.eol": "\n",
   "cSpell.words": [
+    "Automatio",
     "badeball",
     "democypressframework",
     "elif",
     "Gonella",
     "Happo",
     "mochawesome",
-    "optin"
+    "optin",
+    "pytest",
+    "winappdriver"
   ]
 }

@@ -36,6 +36,13 @@ class HomePage extends BasePage {
   clickSignupLogin() {
     cy.contains("Signup / Login").click();
   }
+
+  /**
+   * Click the subscribe button.
+   */
+  clickSubscribe() {
+    this.clickElement("#subscribe_email");
+  }
 }
 
 export default HomePage;

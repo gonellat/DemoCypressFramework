@@ -21,12 +21,15 @@
     "test:chrome": "cypress run --headed --browser chrome --env configEnv=local --reporter-options reportDir=cypress/reports/chrome",
     "test:edge": "cypress run --headed --browser edge --env configEnv=local --reporter-options reportDir=cypress/reports/edge",
     "test:headed": "cls && cypress run --headed --browser chrome --env configEnv=local",
+    "clean:report": "rimraf cypress/reports/html/screenshots cypress/reports/html/videos",
+    "test:headed:clean": "npm run test:headed && npm run clean:report",
     "test:parallel:browsers": "concurrently \"npm run test:chrome\" \"npm run test:edge\"",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint cypress/e2e cypress/support",
+    "lint:fix": "eslint cypress/e2e cypress/support --fix",
     "format": "prettier \"**/*.{js,json,md}\" --write",
     "fix:all": "npm run lint:fix && npm run format",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "generate:locators": "node scripts/locator-extractor.js"
   },
   "lint-staged": {
     "cypress/e2e/**/*.js": [
@@ -56,6 +59,7 @@
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-cypress": "^5.1.0",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsdoc": "^52.0.4",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^8.0.0",
@@ -75,5 +79,9 @@
       "filePrefix": "cucumber-report-",
       "fileSuffix": ".json"
     }
+  },
+  "dependencies": {
+    "minimist": "^1.2.8",
+    "puppeteer": "^24.16.1"
   }
 }

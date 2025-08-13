@@ -25,5 +25,7 @@ Cypress.Commands.add("clearSession", () => {
  */
 Cypress.Commands.add("captureStep", (label) => {
   cy.logStep(label);
-  cy.screenshot(label.replace(/\s+/g, "-").toLowerCase());
+  const testName = Cypress.currentTest.titlePath.join(" ");
+  const fileName = `${testName} - ${label}`.replace(/\s+/g, "-").toLowerCase();
+  cy.screenshot(fileName);
 });
