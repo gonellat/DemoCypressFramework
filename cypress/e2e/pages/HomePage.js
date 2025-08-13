@@ -6,6 +6,15 @@ import BasePage from "./BasePage.js";
  */
 class HomePage extends BasePage {
   /**
+   * Define all locators for the Home Page.
+   */
+  elements = {
+    consentButton: () => cy.get("#ez-accept-all"),
+    signupLoginLink: () => cy.contains("Signup / Login"),
+    subscribeInput: () => cy.get("#subscribe_email"),
+  };
+
+  /**
    * Verify the page title matches.
    * @param {string} expectedTitle - Expected title substring.
    */
@@ -14,15 +23,12 @@ class HomePage extends BasePage {
   }
 
   /**
-   * Accept cookie/consent popup.
-   */
-  /**
    * Accept cookie/consent if the popup is visible.
    */
   acceptConsent() {
     cy.get("body").then(($body) => {
       if ($body.find("#ez-accept-all").length) {
-        this.getElement("#ez-accept-all").click({ force: true });
+        this.elements.consentButton().click({ force: true });
         cy.log("✅ Consent accepted");
       } else {
         cy.log("⚠️ Consent popup not present — skipping");
@@ -34,14 +40,14 @@ class HomePage extends BasePage {
    * Click the "Signup / Login" link.
    */
   clickSignupLogin() {
-    cy.contains("Signup / Login").click();
+    this.elements.signupLoginLink().click();
   }
 
   /**
-   * Click the subscribe button.
+   * Click the subscribe input field.
    */
   clickSubscribe() {
-    this.clickElement("#subscribe_email");
+    this.elements.subscribeInput().click();
   }
 }
 

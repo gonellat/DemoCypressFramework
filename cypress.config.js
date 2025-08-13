@@ -4,8 +4,8 @@
  ***********************************************************************************/
 
 import { defineConfig } from "cypress";
-import dotenv from "dotenv";
 import fs from "fs";
+import { addMatchImageSnapshotPlugin } from "cypress-image-snapshot/plugin";
 
 /**
  * Load .env.{envName} file into Cypress.env()
@@ -13,7 +13,8 @@ import fs from "fs";
  * @param {string} envName - The environment to load (e.g., local, stage, prod)
  * @returns {Object} - Parsed environment variables from file
  */
-function getEnvConfig(envName) {
+async function getEnvConfig(envName) {
+  const dotenv = (await import("dotenv")).default;
   const envFile = `env/.env.${envName}`;
   if (fs.existsSync(envFile)) {
     console.log(`🔧 Loading env from: ${envFile}`);
@@ -80,6 +81,8 @@ export default defineConfig({
 
       config.baseUrl = config.env.url;
       validateEnvKeys(config.env, ["url"]);
+
+      addMatchImageSnapshotPlugin(on, config);
 
       const mochawesome = await import("cypress-mochawesome-reporter/plugin");
       mochawesome.default(on);

@@ -6,14 +6,23 @@ import BasePage from "./BasePage.js";
  */
 class LoginSignupPage extends BasePage {
   /**
+   * Define all locators for the Login/Signup Page.
+   */
+  elements = {
+    signupNameInput: () => cy.get('input[data-qa="signup-name"]'),
+    signupEmailInput: () => cy.get('input[data-qa="signup-email"]'),
+    signupButton: () => cy.get('button[data-qa="signup-button"]'),
+  };
+
+  /**
    * Fill the signup form with a name and email.
    * @param {string} name - The user's name.
    * @param {string} email - The user's email address.
    */
   fillSignupForm(name, email) {
-    this.typeInto('input[data-qa="signup-name"]', name);
-    this.typeInto('input[data-qa="signup-email"]', email);
-    this.clickElement('button[data-qa="signup-button"]');
+    this.elements.signupNameInput().type(name);
+    this.elements.signupEmailInput().type(email);
+    this.elements.signupButton().click();
   }
 }
 

@@ -8,7 +8,7 @@ This is a personal Cypress-based test automation framework designed as a go-to p
 
 ### Prerequisites
 
-- Node.js (https://nodejs.org/) (LTS recommended)
+- Node.js ([https://nodejs.org/](https://nodejs.org/)) (LTS recommended)
 - npm (comes with Node.js)
 - Git
 - VSCode (optional, but recommended)
@@ -96,22 +96,25 @@ cypress/
 │   │   ├── BasePage.js         # Shared helper methods (visit, click, type)
 │   │   └── [OtherPages].js
 │   └── tests/
-│       └── ui/                 # UI-focused test specs (e.g. demoTest.cy.js)
+│   |    └── ui/                # UI-focused test specs (e.g. demoTest.cy.js)
+│   |__ utils/
+│        |__ userGenerator.js   # Faker utility to create user data
 ├── fixtures/                   # Static test data (JSON)
 ├── support/
-│   ├── commands.js             # Custom Cypress commands (cy.captureStep, etc.)
+│   ├── commands.js             # Custom Cypress commands (cy.captureStep, etc.), screenshot or not
 │   ├── commands.d.ts           # IntelliSense typings for custom commands
 │   └── e2e.js                  # Global test setup and hooks
+│   └── pageFactory.js          # Instantiation of pages
 env/
 ├── .env.local                  # Local environment variables (e.g. CYPRESS_url)
 cypress.config.js               # Cypress + plugin config
 package.json                    # Project metadata + scripts
-scripts/                        # 🆕 CLI scripts for locators, etc.
+scripts/                        # CLI scripts for locators, etc.
 ```
 
 ---
 
-## 📦 Features (in progress)
+## 📦 Features
 
 - ✅ Cypress test runner (headed/headless/GUI)
 - ✅ GitHub Actions pipeline with matrix browser support
@@ -125,11 +128,51 @@ scripts/                        # 🆕 CLI scripts for locators, etc.
 - ✅ Shared linting config with ESLint 9 (Flat Config)
 - ✅ Prettier integration for consistent code formatting
 - ✅ Custom ESLint rule to detect commented-out code
+- ✅ Page Factory and BaseTest to centralize setup/teardown and remove boilerplate from every test file
+- ✅ Visual regression testing with cy.visualSnapshot() and threshold support
 - ✅ **CLI utility to auto-generate Page Object files from a web page** (see below)
 
 ---
 
-## ⚙️ Locator Extractor Utility
+## 🤩 Base Test Layer (`withBaseTest.js`)
+
+This framework includes a lightweight test wrapper called `withBaseTest()` that simulates a **base test class**, similar to traditional Selenium or JUnit setups — but Cypress-native.
+
+### 📍 Location
+
+`cypress/e2e/tests/ui/withBaseTest.js`
+
+### 🔍 What It Does
+
+- Injects all Page Object instances (lazily loaded via `Pages`) into your test scope
+- Applies shared `beforeEach` and `afterEach` logic (e.g., page reset, setup, teardown)
+- Supports optional flags like `options.login` for role-based or authenticated test setup
+
+### 🧪 Example Usage
+
+```js
+import { withBaseTest } from "./withBaseTest";
+import { generateUser } from "../../utils/userGenerator";
+
+describe("Demo Account Signup Test", () => {
+  withBaseTest((Pages) => {
+    it("should create an account successfully", () => {
+      const { name, email, password } = generateUser();
+
+      Pages.homePage.visit();
+      Pages.homePage.clickSignupLogin();
+      Pages.loginSignupPage.fillSignupForm(name, email);
+      Pages.accountInfoPage.fillAccountDetails(password);
+      Pages.accountInfoPage.submitForm();
+      Pages.accountInfoPage.verifyAccountCreated();
+    });
+  });
+});
+```
+
+---
+
+## 🔧 Locator Extractor Utility
 
 You can auto-generate a Page Object from any page (public or authenticated!) using a custom script:
 
@@ -173,7 +216,81 @@ npm run fix:all                     # Lint, format, and stage code (for pre-comm
 
 ---
 
-## 🧹 Linting, Formatting & Code Quality
+## 👁️ Visual Regression Testing (`cypress-image-snapshot`)
+
+This framework includes **pixel-perfect visual regression testing** powered by [`cypress-image-snapshot`](https://github.com/jaredpalmer/cypress-image-snapshot).
+
+### 🔍 What It Does
+
+- Captures screenshots during test runs
+- Compares them to baseline images
+- Highlights visual diffs in PRs or CI failures
+- Prevents unintentional layout/styling regressions
+
+### 📆 Snapshot Paths
+
+- Baseline snapshots: `cypress/snapshots/`
+- Visual diffs: `cypress/snapshots/__diff_output__/`
+
+### ⚙️ Global Threshold
+
+Set in `cypress/support/e2e.js`:
+
+```js
+addMatchImageSnapshotCommand({
+  failureThreshold: 0.01,
+  failureThresholdType: "percent",
+});
+```
+
+### 🧪 Example Test
+
+```js
+import { withBaseTest } from "./withBaseTest";
+
+describe("Visual Test: Home Page", () => {
+  withBaseTest((Pages) => {
+    it("should visually match the homepage layout", () => {
+      Pages.homePage.visit();
+      cy.visualSnapshot("home-page");
+    });
+  });
+});
+```
+
+### ⚡ Toggle Snapshot Assertions
+
+To disable visual snapshot assertions temporarily:
+
+```bash
+npx cypress run --env configEnv=local,visualTesting=false
+```
+
+---
+
+## 🔧 Custom Command: `cy.visualSnapshot()`
+
+This project provides a clean helper to manage visual testing:
+
+```js
+cy.visualSnapshot(name, options?)
+```
+
+- Wraps `cy.matchImageSnapshot()`
+- Skips snapshot if `Cypress.env("visualTesting") === false`
+
+### Example:
+
+```js
+cy.visualSnapshot("dashboard", {
+  failureThreshold: 0.005,
+  failureThresholdType: "percent",
+});
+```
+
+---
+
+## 𞧹 Linting, Formatting & Code Quality
 
 This project uses a fully configured ESLint 9 Flat Config setup with:
 
@@ -187,7 +304,7 @@ This project uses a fully configured ESLint 9 Flat Config setup with:
 
 Flags any code that’s been commented out (e.g., `// const x = 1;`) to keep the test files clean and readable.
 
-### 🛠 Editor Setup
+### 🛠️ Editor Setup
 
 In `.vscode/settings.json`:
 
@@ -231,8 +348,6 @@ npm run fix:all
 - Formats it with Prettier
 - Stages cleaned files for commit
 
-Husky hooks live in the `.husky/` folder and are triggered automatically by Git.
-
 ---
 
 ## 📄 Reporting
@@ -243,7 +358,24 @@ Husky hooks live in the `.husky/` folder and are triggered automatically by Git.
 
 ---
 
-## 🧾 Configuration Files Overview
+### 🔒 Environment Isolation Policy
+
+Each environment (`local`, `stage`, `prod`) is defined by a single `.env.{env}` file:
+
+- Only one env file is loaded at a time
+- No merging or fallback chaining is used (e.g., `.env.stage` + `.env.stage.local`)
+
+This ensures:
+
+- 💡 Predictable config per environment
+- 🧪 Accurate staging/prod test conditions
+- 🔐 No risk of local overrides silently leaking into CI
+
+> If you need to override values locally, use `--env configEnv=local` and create your own `.env.local` file instead.
+
+---
+
+## 🗓️ Configuration Files Overview
 
 - `.nvmrc`: Specifies the Node.js version (used with tools like `nvm`) to ensure devs and CI use Node 22.
 - `.prettierrc`: Defines formatting rules used by Prettier (e.g., tab width, quotes, line endings).
@@ -263,15 +395,13 @@ Husky hooks live in the `.husky/` folder and are triggered automatically by Git.
 ## 🔧 To Do / Future Enhancements
 
 - ⬜ Docker container for local or CI use
-- ⬜ Environment fallback chaining (.env → .env.local)
-- ⬜ Visual testing integration (e.g., Percy or Happo)
 - ⬜ API testing layer with shared fixtures
-- ⬜ Page factory or test data builders with Faker
 - ⬜ Component Testing
+- ⬜ Cucumber
 
 ---
 
-## 🐞 Debugging Help
+## 🚾 Debugging Help
 
 📖 See the [DEBUGGING.md](./DEBUGGING.md) guide for step-by-step techniques:
 
@@ -284,5 +414,5 @@ Husky hooks live in the `.husky/` folder and are triggered automatically by Git.
 
 ## 👤 Author
 
-Tim Gonella  
+Tim Gonella
 [GitHub Profile](https://github.com/gonellat)

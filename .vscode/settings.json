@@ -21,6 +21,7 @@
     "mochawesome",
     "optin",
     "pytest",
+    "signup",
     "winappdriver"
   ]
 }

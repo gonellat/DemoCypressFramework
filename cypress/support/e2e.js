@@ -18,6 +18,12 @@
 
 import "./commands.js";
 import "cypress-mochawesome-reporter/register";
+import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
+
+addMatchImageSnapshotCommand({
+  failureThreshold: 0.01, // Allow up to 1% difference
+  failureThresholdType: "percent", // Compare by percentage (not absolute pixel count)
+});
 
 /**
  * Global test setup.
