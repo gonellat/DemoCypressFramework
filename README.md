@@ -97,19 +97,25 @@ cypress/
 │   │   └── [OtherPages].js
 │   └── tests/
 │   |    └── ui/                # UI-focused test specs (e.g. demoTest.cy.js)
+|   |    |__ api/               # API-focused test specs (e.g. userApiTest.cy.js)
 │   |__ utils/
 │        |__ userGenerator.js   # Faker utility to create user data
+├── component/                  # Component test specs
 ├── fixtures/                   # Static test data (JSON)
 ├── support/
 │   ├── commands.js             # Custom Cypress commands (cy.captureStep, etc.), screenshot or not
 │   ├── commands.d.ts           # IntelliSense typings for custom commands
-│   └── e2e.js                  # Global test setup and hooks
+│   ├── e2e.js                  # Global test setup and hooks
+│   ├── component.js            # Component Test setup (mounting, CT-specific hooks)
 │   └── pageFactory.js          # Instantiation of pages
+├── support/component-index.html # HTML shell used by Cypress CT runner
 env/
 ├── .env.local                  # Local environment variables (e.g. CYPRESS_url)
-cypress.config.js               # Cypress + plugin config
+cypress.config.js               # Cypress + plugin config (includes CT + E2E setup)
+vite.config.js                  # Vite bundler config for component testing
 package.json                    # Project metadata + scripts
 scripts/                        # CLI scripts for locators, etc.
+
 ```
 
 ---
@@ -130,6 +136,8 @@ scripts/                        # CLI scripts for locators, etc.
 - ✅ Custom ESLint rule to detect commented-out code
 - ✅ Page Factory and BaseTest to centralize setup/teardown and remove boilerplate from every test file
 - ✅ Visual regression testing with cy.visualSnapshot() and threshold support
+- ✅ Component Testing support using Cypress + Vite + React
+- ✅ API testing support with shared fixtures and helper methods
 - ✅ **CLI utility to auto-generate Page Object files from a web page** (see below)
 
 ---
@@ -356,6 +364,9 @@ npm run fix:all
 - 🎥 Screenshots and videos included on failures
 - 💬 Step-level logs using `cy.captureStep()`
 
+To generate and view the full HTML test report after any test run:
+npm run report:full
+
 ---
 
 ### 🔒 Environment Isolation Policy
@@ -396,7 +407,6 @@ This ensures:
 
 - ⬜ Docker container for local or CI use
 - ⬜ API testing layer with shared fixtures
-- ⬜ Component Testing
 - ⬜ Cucumber
 
 ---

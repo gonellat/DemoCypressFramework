@@ -53,14 +53,9 @@ export default defineConfig({
     grepFilterSpecs: true,
     grepOmitFiltered: true,
   },
-  reporter: "cypress-mochawesome-reporter",
+  reporter: "cypress-multi-reporters",
   reporterOptions: {
-    reportDir: "cypress/reports/html",
-    overwrite: false,
-    html: true,
-    json: true,
-    embeddedScreenshots: true,
-    inlineAssets: true,
+    configFile: "multi-reporter-config.json",
   },
 
   e2e: {
@@ -84,13 +79,18 @@ export default defineConfig({
 
       addMatchImageSnapshotPlugin(on, config);
 
-      const mochawesome = await import("cypress-mochawesome-reporter/plugin");
-      mochawesome.default(on);
-
       return config;
     },
 
     specPattern: "cypress/e2e/**/*.cy.{js,ts}",
     supportFile: "cypress/support/e2e.js",
+  },
+  component: {
+    devServer: {
+      framework: "react",
+      bundler: "vite",
+    },
+    specPattern: "cypress/component/**/*.cy.{js,jsx,ts,tsx}",
+    supportFile: "cypress/support/component.js",
   },
 });

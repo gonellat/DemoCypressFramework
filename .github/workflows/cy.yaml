@@ -70,6 +70,9 @@ jobs:
           CYPRESS_configEnv: ${{ inputs.environment }}
           CI: true
 
+      - name: Merge JSON + Generate Report
+        run: npm run report:full
+
       - name: Upload Mochawesome Report
         if: always()
         uses: actions/upload-artifact@v4

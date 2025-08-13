@@ -17,7 +17,6 @@
 // ***********************************************************
 
 import "./commands.js";
-import "cypress-mochawesome-reporter/register";
 import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
 
 addMatchImageSnapshotCommand({
