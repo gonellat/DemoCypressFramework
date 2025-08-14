@@ -138,6 +138,7 @@ scripts/                        # CLI scripts for locators, etc.
 - ✅ Visual regression testing with cy.visualSnapshot() and threshold support
 - ✅ Component Testing support using Cypress + Vite + React
 - ✅ API testing support with shared fixtures and helper methods
+- ✅ Dockerized test runner with baked-in config and CLI override support
 - ✅ **CLI utility to auto-generate Page Object files from a web page** (see below)
 
 ---
@@ -369,6 +370,33 @@ npm run report:full
 
 ---
 
+🐳 Running Tests in Docker
+
+This project includes a Dockerfile and docker-compose.yml for running Cypress in a fully isolated environment.
+
+✅ Build the image
+
+```bash
+docker-compose build
+```
+
+✅ Run all tests
+
+```bash
+docker-compose run cypress
+```
+
+✅ Run a specific test file
+
+```bash
+docker-compose run cypress --spec cypress/e2e/tests/api/userApiTest.cy.js
+```
+
+Reports, screenshots, and videos will be written to your local machine (cypress/reports/, etc.) automatically via volume mounts.
+You do not need to install Node or Cypress locally to run tests — just Docker.
+
+## You will need them to run report generation
+
 ### 🔒 Environment Isolation Policy
 
 Each environment (`local`, `stage`, `prod`) is defined by a single `.env.{env}` file:
@@ -406,8 +434,9 @@ This ensures:
 ## 🔧 To Do / Future Enhancements
 
 - ⬜ Docker container for local or CI use
-- ⬜ API testing layer with shared fixtures
 - ⬜ Cucumber
+- ⬜ Api mocking
+- ⬜ Dealing with controls
 
 ---
 

@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  cypress:
+    build:
+      context: .
+    container_name: cypress-runner
+    volumes:
+      - .:/e2e
+      - ./cypress/videos:/e2e/cypress/videos
+      - ./cypress/screenshots:/e2e/cypress/screenshots
+    working_dir: /e2e
+    environment:
+      - CYPRESS_configEnv=local
