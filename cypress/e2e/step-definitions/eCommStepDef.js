@@ -2,6 +2,7 @@
 /// <reference types="cypress" />
 
 import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor';
+
 import eCommerceHomePage from '../pages/eCommerceHomePage.js';
 
 /** @typedef {import("../pages/ProductPage.js").default} ProductPage */

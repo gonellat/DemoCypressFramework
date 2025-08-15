@@ -7,12 +7,12 @@
  */
 
 import AccountInfoPage from '../e2e/pages/AccountInfoPage.js';
-import HomePage from '../e2e/pages/HomePage.js';
-import LoginSignupPage from '../e2e/pages/LoginSignupPage.js';
 import CartPage from '../e2e/pages/CartPage.js';
 import ConfirmationPage from '../e2e/pages/ConfirmationPage.js';
-import ProductPage from '../e2e/pages/ProductPage.js';
 import eCommerceHomePage from '../e2e/pages/eCommerceHomePage.js';
+import HomePage from '../e2e/pages/HomePage.js';
+import LoginSignupPage from '../e2e/pages/LoginSignupPage.js';
+import ProductPage from '../e2e/pages/ProductPage.js';
 
 /**
  * Private cached instances (lazy init in getters).

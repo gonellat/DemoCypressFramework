@@ -1,7 +1,13 @@
 import BasePage from './BasePage.js';
 import ConfirmationPage from './ConfirmationPage';
 
+/**
+ *
+ */
 class CartPage extends BasePage {
+  /**
+   *
+   */
   sumOfProducts() {
     let sum = 0;
     return cy
@@ -15,6 +21,9 @@ class CartPage extends BasePage {
       });
   }
 
+  /**
+   *
+   */
   checkOutItems() {
     cy.contains('button', 'Checkout').click();
     return new ConfirmationPage();
