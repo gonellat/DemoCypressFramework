@@ -1,5 +1,5 @@
 // cypress/pageObjects/LoginSignupPage.js
-import BasePage from "./BasePage.js";
+import BasePage from './BasePage.js';
 
 /**
  * Page class representing the Login/Signup page.

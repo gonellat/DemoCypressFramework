@@ -1,42 +1,49 @@
-/***********************************************************************************
- * Cypress Configuration File (ESM version)
- * Modern ES Module format with environment-specific .env loading and plugin support
- ***********************************************************************************/
+// @ts-check
+/**
+ * Cypress ESM config compatible with CommonJS plugins on Windows.
+ * - Imports are alphabetized within the combined builtin+external group.
+ * - No empty lines inside the import group (per eslint-plugin-import/order).
+ */
 
-import { defineConfig } from "cypress";
-import fs from "fs";
-import { addMatchImageSnapshotPlugin } from "cypress-image-snapshot/plugin";
+import cucumberPreprocessor from '@badeball/cypress-cucumber-preprocessor';
+import esbuildInterop from '@badeball/cypress-cucumber-preprocessor/esbuild';
+import createBundler from '@bahmutov/cypress-esbuild-preprocessor';
+import { defineConfig } from 'cypress';
+import imageSnapshotPlugin from 'cypress-image-snapshot/plugin';
+import fs from 'fs';
+
+// CJS: default export is an object; destructure the function we need
+const { addCucumberPreprocessorPlugin } = cucumberPreprocessor;
+
+// CJS interop: the default export may be a function OR an object with { createEsbuildPlugin }.
+// We cast to `any` first so VS Code stops complaining, while keeping runtime correct.
+/** @type {any} */ const _esb = esbuildInterop;
+/** @type {(cfg: Cypress.PluginConfigOptions) => import('esbuild').Plugin} */
+const createEsbuildPlugin = _esb?.createEsbuildPlugin ?? _esb;
+
+// CJS: default export is an object; destructure the function we need
+const { addMatchImageSnapshotPlugin } = imageSnapshotPlugin;
 
 /**
- * Load .env.{envName} file into Cypress.env()
- *
- * @param {string} envName - The environment to load (e.g., local, stage, prod)
- * @returns {Object} - Parsed environment variables from file
+ * Load environment variables from env/.env.<envName>.
+ * @param {string} envName
+ * @returns {Promise<Record<string, string>>}
  */
 async function getEnvConfig(envName) {
-  const dotenv = (await import("dotenv")).default;
+  const dotenv = (await import('dotenv')).default;
   const envFile = `env/.env.${envName}`;
-  if (fs.existsSync(envFile)) {
-    console.log(`🔧 Loading env from: ${envFile}`);
-    const config = dotenv.config({ path: envFile }).parsed;
-    return config;
-  } else {
-    console.warn(`⚠️ Environment file ${envFile} not found. Falling back to default.`);
-    return {};
-  }
+  return fs.existsSync(envFile) ? (dotenv.config({ path: envFile }).parsed ?? {}) : {};
 }
 
 /**
- * Validate that all required environment variables are present.
- * @param {Object} env - The merged Cypress environment object
- * @param {string[]} requiredKeys - List of required keys to check
+ * Validate required environment keys.
+ * @param {Record<string, any>} env
+ * @param {string[]} requiredKeys
+ * @returns {void}
  */
 function validateEnvKeys(env, requiredKeys = []) {
-  const missingKeys = requiredKeys.filter((key) => !env[key]);
-
-  if (missingKeys.length > 0) {
-    throw new Error(`❌ Missing required environment variable(s): ${missingKeys.join(", ")}`);
-  }
+  const missing = requiredKeys.filter((k) => !env[k]);
+  if (missing.length) throw new Error(`Missing env vars: ${missing.join(', ')}`);
 }
 
 export default defineConfig({
@@ -45,52 +52,68 @@ export default defineConfig({
   screenshotOnRunFailure: true,
   viewportWidth: 1920,
   viewportHeight: 1080,
-  retries: { runMode: 0 },
-  projectId: "ProjectExample",
+  retries: { runMode: 0, openMode: 0 },
+  projectId: 'ProjectExample',
   env: {
-    configEnv: "local",
-    url: "https://example.cypress.io/",
+    configEnv: 'local',
+    url: 'https://example.cypress.io/',
     grepFilterSpecs: true,
     grepOmitFiltered: true,
+    stepDefinitions: 'cypress/e2e/step-definitions/**/*.{js,ts}',
   },
-  reporter: "cypress-multi-reporters",
-  reporterOptions: {
-    configFile: "multi-reporter-config.json",
-  },
+  reporter: 'cypress-multi-reporters',
+  reporterOptions: { configFile: 'multi-reporter-config.json' },
 
   e2e: {
-    screenshotsFolder: "cypress/screenshots",
-    videosFolder: "cypress/videos",
+    screenshotsFolder: 'cypress/screenshots',
+    videosFolder: 'cypress/videos',
 
+    /**
+     * Node-side plugin setup.
+     * @param {Cypress.PluginEvents} on
+     * @param {Cypress.PluginConfigOptions} config
+     * @returns {Promise<Cypress.PluginConfigOptions>} Resolved Cypress config
+     */
     async setupNodeEvents(on, config) {
-      const environment = config.env.configEnv || "local";
-      const loadedEnv = getEnvConfig(environment);
-
+      const envName = config.env.configEnv || 'local';
+      const loaded = await getEnvConfig(envName);
       config.env = {
         ...config.env,
-        ...loadedEnv,
+        ...loaded,
+        stepDefinitions: config.env.stepDefinitions || 'cypress/e2e/step-definitions',
       };
 
-      console.log(`🔧 Loading config for environment: ${environment}`);
-      console.log(`🔧 Loaded URL: ${config.env.url}`);
-
       config.baseUrl = config.env.url;
-      validateEnvKeys(config.env, ["url"]);
+      validateEnvKeys(config.env, ['url']);
 
+      // Cucumber preprocessor (must run before file:preprocessor)
+      await addCucumberPreprocessorPlugin(on, config);
+
+      // esbuild preprocessor with the Cucumber esbuild plugin
+      /** @type {import('esbuild').Plugin} */
+      const cucumberEsbuildPlugin = createEsbuildPlugin(config);
+
+      on(
+        'file:preprocessor',
+        createBundler({
+          /** @type {import('esbuild').Plugin[]} */
+          plugins: [cucumberEsbuildPlugin],
+        })
+      );
+
+      // Image snapshot plugin
       addMatchImageSnapshotPlugin(on, config);
 
       return config;
     },
 
-    specPattern: "cypress/e2e/**/*.cy.{js,ts}",
-    supportFile: "cypress/support/e2e.js",
+    specPattern: ['cypress/e2e/**/*.feature', 'cypress/e2e/**/*.cy.{js,ts}'],
+    supportFile: 'cypress/support/e2e.js',
   },
+
   component: {
-    devServer: {
-      framework: "react",
-      bundler: "vite",
-    },
-    specPattern: "cypress/component/**/*.cy.{js,jsx,ts,tsx}",
-    supportFile: "cypress/support/component.js",
+    devServer: { framework: 'react', bundler: 'vite' },
+    specPattern: 'cypress/component/**/*.cy.{js,jsx,ts,tsx}',
+    supportFile: 'cypress/support/component.js',
   },
 });

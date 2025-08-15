@@ -1,12 +1,12 @@
 export default {
   meta: {
-    type: "problem",
+    type: 'problem',
     docs: {
-      description: "Disallow commented-out code",
+      description: 'Disallow commented-out code',
     },
     schema: [],
     messages: {
-      commentedCode: "Commented-out code should be removed.",
+      commentedCode: 'Commented-out code should be removed.',
     },
   },
   create(context) {
@@ -20,7 +20,7 @@ export default {
           if (codeLikePattern.test(comment.value.trim())) {
             context.report({
               loc: comment.loc,
-              messageId: "commentedCode",
+              messageId: 'commentedCode',
             });
           }
         });

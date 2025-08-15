@@ -19,6 +19,23 @@ This is a personal Cypress-based test automation framework designed as a go-to p
 npm install
 ```
 
+---
+
+## 🗓️ Configuration Files Overview
+
+- **.nvmrc**: Specifies the Node.js version (used with tools like nvm) to ensure devs and CI use Node 22.
+- **.prettierrc**: Defines formatting rules used by Prettier (e.g., tab width, quotes, line endings).
+- **commitlint.config.js**: Enforces conventional commit message formats to keep Git history clean.
+- **eslint-plugins/**: Local directory for custom ESLint rules like `no-commented-code`, allowing enforcement of project-specific style or behavior.
+- **ESM (ECMAScript Modules)**: This project is written using the modern ESM format:
+  - All config and source files use `import` / `export` syntax instead of `require()` / `module.exports`.
+  - `cypress.config.js` is written using `export default`.
+  - Compatible with tools like Vite, esbuild, and Cucumber plugins that require ESM.
+  - The ESM format is enabled via `"type": "module"` in `package.json`.
+  - Enables top-level `await`, tree-shaking, and native browser compatibility.
+
+---
+
 ## 🔑 Environment Config
 
 This framework supports dynamic environment loading for different stages like `local`, `stage`, or `prod`.
@@ -37,8 +54,6 @@ url=https://automationexercise.com
 ```
 
 Cypress uses the `--env configEnv=local` flag to load the correct file.
-
----
 
 ### 🚀 GitHub Actions (CI)
 
@@ -90,31 +105,38 @@ npm run test:edge         # Edge only
 ## 🧱 Project Structure
 
 ```
-cypress/
-├── e2e/
-│   ├── pages/                  # Page Object Model classes
-│   │   ├── BasePage.js         # Shared helper methods (visit, click, type)
-│   │   └── [OtherPages].js
-│   └── tests/
-│   |    └── ui/                # UI-focused test specs (e.g. demoTest.cy.js)
-|   |    |__ api/               # API-focused test specs (e.g. userApiTest.cy.js)
-│   |__ utils/
-│        |__ userGenerator.js   # Faker utility to create user data
-├── component/                  # Component test specs
-├── fixtures/                   # Static test data (JSON)
-├── support/
-│   ├── commands.js             # Custom Cypress commands (cy.captureStep, etc.), screenshot or not
-│   ├── commands.d.ts           # IntelliSense typings for custom commands
-│   ├── e2e.js                  # Global test setup and hooks
-│   ├── component.js            # Component Test setup (mounting, CT-specific hooks)
-│   └── pageFactory.js          # Instantiation of pages
-├── support/component-index.html # HTML shell used by Cypress CT runner
-env/
-├── .env.local                  # Local environment variables (e.g. CYPRESS_url)
-cypress.config.js               # Cypress + plugin config (includes CT + E2E setup)
-vite.config.js                  # Vite bundler config for component testing
-package.json                    # Project metadata + scripts
-scripts/                        # CLI scripts for locators, etc.
+├── cypress/
+│   ├── component/                    # Component test specs for Cypress Component Testing
+│   ├── e2e/
+│   │   ├── features/                 # Cucumber .feature files containing Gherkin scenarios
+│   │   ├── step-definitions/         # Step definition files (.js/.ts) linked to Gherkin steps
+│   │   ├── tests/
+│   │   │   ├── ui/                   # UI E2E specs covering end-to-end user flows
+│   │   │   ├── api/                  # API specs for backend endpoint validation
+│   │   ├── pages/                    # Page Object Model (POM) classes for UI elements & actions
+│   │   └── utils/                    # Test utilities (faker data, generators, formatters, etc.)
+│   ├── fixtures/                     # Static test data in JSON or other formats
+│   ├── helpers/
+│   │   ├── api/                      # API helper functions for request/response handling
+│   │   ├── ui/                       # UI helper functions for reusable DOM interactions
+│   ├── support/
+│   │   ├── commands.js               # Custom Cypress commands registered via Cypress.Commands API
+│   │   ├── e2e.js                    # Global E2E support setup (runs before all E2E tests)
+│   │   ├── component.js              # Global Component Testing setup
+│   │   └── pageFactory.js            # Page factory to dynamically load POM classes
+│   └── reports/                      # Test reports (HTML, JUnit, JSON, etc.)
+├── docker/
+│   ├── Dockerfile                    # Docker image definition for running Cypress in container
+│   ├── docker-compose.yml            # Multi-container Docker setup (e.g., Cypress + app + services)
+│   └── scripts/                      # Shell scripts for Docker build/run automation
+├── types/
+│   └── cypress-commands.d.ts         # TypeScript IntelliSense for custom Cypress commands
+├── env/                              # Environment variable files (.env.local, .env.stage, etc.)
+├── package.json                      # Project dependencies, scripts, and metadata
+├── cypress.config.js                 # Cypress configuration file (ESM format)
+├── tsconfig.json                     # TypeScript configuration for Cypress + project files
+├── multi-reporter-config.json        # Config for Cypress multi-reporter (e.g., mochawesome, junit)
+└── README.md                         # Project overview, setup instructions, and usage guide
 
 ```
 
@@ -126,19 +148,20 @@ scripts/                        # CLI scripts for locators, etc.
 - ✅ GitHub Actions pipeline with matrix browser support
 - ✅ Multi-browser support (Chrome + Edge)
 - ✅ Custom commands: `cy.captureStep()`, `cy.clearSession()`, `cy.logStep()`
-- ✅ Page Object Model with shared `BasePage`
 - ✅ Dynamic `.env` file loading with environment validation
 - ✅ Faker-based test data generation
 - ✅ Type-safe command IntelliSense via `commands.d.ts`
+- ✅ ESLint 9 Flat Config + Prettier + custom rules
 - ✅ Mochawesome HTML + JSON reporting
 - ✅ Shared linting config with ESLint 9 (Flat Config)
 - ✅ Prettier integration for consistent code formatting
 - ✅ Custom ESLint rule to detect commented-out code
-- ✅ Page Factory and BaseTest to centralize setup/teardown and remove boilerplate from every test file
+- ✅ Page Object Model with Page Factory and BaseTest to centralize setup/teardown and remove boilerplate from every test file
 - ✅ Visual regression testing with cy.visualSnapshot() and threshold support
 - ✅ Component Testing support using Cypress + Vite + React
 - ✅ API testing support with shared fixtures and helper methods
 - ✅ Dockerized test runner with baked-in config and CLI override support
+- ✅ **Cucumber BDD** with \`.feature\` + step definitions
 - ✅ **CLI utility to auto-generate Page Object files from a web page** (see below)
 
 ---
@@ -160,12 +183,12 @@ This framework includes a lightweight test wrapper called `withBaseTest()` that 
 ### 🧪 Example Usage
 
 ```js
-import { withBaseTest } from "./withBaseTest";
-import { generateUser } from "../../utils/userGenerator";
+import { withBaseTest } from './withBaseTest';
+import { generateUser } from '../../utils/userGenerator';
 
-describe("Demo Account Signup Test", () => {
+describe('Demo Account Signup Test', () => {
   withBaseTest((Pages) => {
-    it("should create an account successfully", () => {
+    it('should create an account successfully', () => {
       const { name, email, password } = generateUser();
 
       Pages.homePage.visit();
@@ -210,18 +233,57 @@ node scripts/locator-extractor-links.js https://testautomationu.applitools.com/l
 ## 💻 Available Scripts
 
 ```bash
-npm run cypress:open                # Launch Cypress Test Runner UI
-npm run test:headed                 # Run tests in Chrome (headed)
-npm run test:edge                   # Run tests in Edge (headed)
-npm run test:parallel:browsers      # Chrome + Edge parallel run
-npm run merge:reports               # Merge Mochawesome JSONs into HTML report
-npm run clean:report                # Remove extra screenshots/videos copied into report folder
-npm run test:headed:clean           # "npm run test:headed && npm run clean:report"
-npm run lint                        # Lint all project files
-npm run lint:fix                    # Auto-fix lint errors where possible
-npm run format                      # Format code using Prettier
-npm run fix:all                     # Lint, format, and stage code (for pre-commit)
+
+Command                                       Description
+--------------------------------------------  ---------------------------------------------
+npm test                                      Run all Cypress tests headless
+npm run test:chrome                           Run E2E tests in Chrome (headed)
+npm run test:edge                             Run E2E tests in Edge (headed)
+npm run test:headed                           Run E2E tests in Chrome headed with local env
+npm run test:headed:clean                     Run headed tests then clean reports
+npm run test:parallel:browsers                Run Chrome + Edge in parallel
+npm run test:api                              Run API tests only
+npm run lint                                  Lint JS/TS files
+npm run lint:fix                              Auto-fix lint errors
+npm run format                                Format code with Prettier
+npm run fix:all                               Lint fix + format
+npm run merge:reports                         Merge mochawesome reports
+npm run report:open                           Generate and open HTML report
+npm run report:full                           Merge + open HTML report
+npm run clean:report                          Clean old reports
+npm run debug:cucumber                        Open Cypress with cucumber debug logs
+docker-compose up                             Run tests in Docker
+docker build -t cypress-tests .               Build Cypress Docker image
 ```
+
+---
+
+## 🥒 Cucumber BDD
+
+se [\`@badeball/cypress-cucumber-preprocessor\`](https://github.com/badeball/cypress-cucumber-preprocessor) for Gherkin syntax.
+
+**Feature file:** \`cypress/e2e/features/contact.feature\`
+\`\`\`gherkin
+Feature: Contact Page
+Scenario: Open home page
+Given I open the home page
+\`\`\`
+
+**Step definition:** \`cypress/e2e/step-definitions/home.steps.js\`
+\`\`\`js
+import { Given } from "@badeball/cypress-cucumber-preprocessor";
+
+Given("I open the home page", () => {
+cy.visit("https://automationexercise.com");
+});
+\`\`\`
+
+Configuration in \`package.json\`:
+\`\`\`json
+"cypress-cucumber-preprocessor": {
+"stepDefinitions": "cypress/e2e/step-definitions/\*_/_.{js,ts}"
+}
+\`\`\`
 
 ---
 
@@ -248,20 +310,20 @@ Set in `cypress/support/e2e.js`:
 ```js
 addMatchImageSnapshotCommand({
   failureThreshold: 0.01,
-  failureThresholdType: "percent",
+  failureThresholdType: 'percent',
 });
 ```
 
 ### 🧪 Example Test
 
 ```js
-import { withBaseTest } from "./withBaseTest";
+import { withBaseTest } from './withBaseTest';
 
-describe("Visual Test: Home Page", () => {
+describe('Visual Test: Home Page', () => {
   withBaseTest((Pages) => {
-    it("should visually match the homepage layout", () => {
+    it('should visually match the homepage layout', () => {
       Pages.homePage.visit();
-      cy.visualSnapshot("home-page");
+      cy.visualSnapshot('home-page');
     });
   });
 });
@@ -291,15 +353,15 @@ cy.visualSnapshot(name, options?)
 ### Example:
 
 ```js
-cy.visualSnapshot("dashboard", {
+cy.visualSnapshot('dashboard', {
   failureThreshold: 0.005,
-  failureThresholdType: "percent",
+  failureThresholdType: 'percent',
 });
 ```
 
 ---
 
-## 𞧹 Linting, Formatting & Code Quality
+## Linting Formatting & Code Quality
 
 This project uses a fully configured ESLint 9 Flat Config setup with:
 
@@ -370,7 +432,7 @@ npm run report:full
 
 ---
 
-🐳 Running Tests in Docker
+## 🐳 Running Tests in Docker
 
 This project includes a Dockerfile and docker-compose.yml for running Cypress in a fully isolated environment.
 
@@ -416,10 +478,16 @@ This ensures:
 
 ## 🗓️ Configuration Files Overview
 
-- `.nvmrc`: Specifies the Node.js version (used with tools like `nvm`) to ensure devs and CI use Node 22.
-- `.prettierrc`: Defines formatting rules used by Prettier (e.g., tab width, quotes, line endings).
-- `commitlint.config.js`: Enforces conventional commit message formats to keep Git history clean.
-- `eslint-plugins/`: Local directory for custom ESLint rules like `no-commented-code`, allowing enforcement of project-specific style or behavior.
+| File                           | Purpose                                                                |
+| ------------------------------ | ---------------------------------------------------------------------- |
+| \`cypress.config.js\`          | Main Cypress ESM config with Cucumber, esbuild, image snapshot plugins |
+| \`tsconfig.json\`              | JS type-checking & loads \`types/\` for IntelliSense                   |
+| \`multi-reporter-config.json\` | Config for multiple reporters (mochawesome, cucumber JSON)             |
+| \`.prettierrc\`                | Prettier formatting rules                                              |
+| \`.eslint.config.js\`          | ESLint flat config                                                     |
+| \`.husky/\`                    | Git hooks                                                              |
+| \`types/\`                     | Custom command type definitions                                        |
+| \`env/.env.\*\`                | Environment variables per stage                                        |
 
 ---
 
@@ -433,8 +501,6 @@ This ensures:
 
 ## 🔧 To Do / Future Enhancements
 
-- ⬜ Docker container for local or CI use
-- ⬜ Cucumber
 - ⬜ Api mocking
 - ⬜ Dealing with controls
 

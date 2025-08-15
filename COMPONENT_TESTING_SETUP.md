@@ -41,14 +41,14 @@ File: `cypress/component/CheckboxSection.cy.js`
 This file tests the checkbox component:
 
 ```jsx
-import { CheckboxSection } from "../../src/components/CheckboxSection";
-import { mount } from "cypress/react";
+import { CheckboxSection } from '../../src/components/CheckboxSection';
+import { mount } from 'cypress/react';
 
-describe("<CheckboxSection />", () => {
-  it("should allow checking both boxes", () => {
+describe('<CheckboxSection />', () => {
+  it('should allow checking both boxes', () => {
     mount(<CheckboxSection />);
-    cy.contains("Option 1").find("input").check().should("be.checked");
-    cy.contains("Option 2").find("input").check().should("be.checked");
+    cy.contains('Option 1').find('input').check().should('be.checked');
+    cy.contains('Option 2').find('input').check().should('be.checked');
   });
 });
 ```
@@ -70,8 +70,8 @@ Then created a config file:
 **File:** `vite.config.js`
 
 ```js
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
@@ -90,11 +90,11 @@ export default defineConfig({
 // cypress/support/component.js
 
 // Registers shared Cypress commands for CT tests
-import "./commands";
+import './commands';
 
 // Optional CT-specific setup
 beforeEach(() => {
-  cy.log("🧪 [CT] Running component test");
+  cy.log('🧪 [CT] Running component test');
 });
 ```
 

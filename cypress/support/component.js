@@ -1,9 +1,7 @@
-// cypress/support/component.js
+/// <reference path="./commands.d.ts" />
 
-// Register any global CT-specific commands here
-import "./commands";
+import './commands';
 
-// Optional: Add beforeEach/afterEach hooks
 beforeEach(() => {
-  cy.log("🧪 [CT] Mounting component...");
+  cy.log('🧪 [CT] Mounting component...');
 });

@@ -1,26 +1,30 @@
+// types/cypress-commands.d.ts
 /// <reference types="cypress" />
 
 declare namespace Cypress {
+  interface VisualSnapshotOptions extends Partial<ScreenshotOptions> {
+    /** Skip visual snapshot even if plugin is installed */
+    skip?: boolean;
+    /** Allow arbitrary plugin-specific options */
+    [key: string]: unknown;
+  }
+
   interface Chainable {
     /**
-     * Logs a test step and captures a screenshot.
-     * @param label Description of the test step
+     * Provided by cypress-image-snapshot.
      */
-    captureStep(label: string): Chainable<void>;
+    matchImageSnapshot(name?: string, options?: unknown): Chainable<void>;
 
     /**
-     * Logs a test step message.
-     * @param message Description of the step
+     * Your custom visual snapshot wrapper (skips via env or { skip: true }).
+     */
+    visualSnapshot(name: string, options?: VisualSnapshotOptions): Chainable<void>;
+
+    /**
+     * Logging helpers you defined
      */
     logStep(message: string): Chainable<void>;
-
-    visualSnapshot(
-      name: string,
-      options?: Partial<ScreenshotOptions & MatchImageSnapshotOptions>,
-    ): void;
-
-    clearCookies(): Chainable<void>;
-    clearLocalStorage(): Chainable<void>;
     clearSession(): Chainable<void>;
+    captureStep(label: string): Chainable<void>;
   }
 }

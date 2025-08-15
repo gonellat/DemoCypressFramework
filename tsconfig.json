@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true, // ✅ Don't write any output files
+    "declaration": false, // ✅ Extra safety: no .d.ts generation
+    "strict": false,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["cypress"],
+    "skipLibCheck": true,
+    "baseUrl": "."
+  },
+  "include": ["types/**/*.d.ts", "cypress/**/*.js"],
+  "exclude": ["node_modules", "cypress/videos", "cypress/screenshots", "cypress/reports"]
+}

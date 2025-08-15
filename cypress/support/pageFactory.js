@@ -1,7 +1,7 @@
 // cypress/support/pageFactory.js
-import HomePage from "../e2e/pages/HomePage.js";
-import LoginSignupPage from "../e2e/pages/LoginSignupPage.js";
-import AccountInfoPage from "../e2e/pages/AccountInfoPage.js";
+import AccountInfoPage from '../e2e/pages/AccountInfoPage.js';
+import HomePage from '../e2e/pages/HomePage.js';
+import LoginSignupPage from '../e2e/pages/LoginSignupPage.js';
 
 let _homePage, _loginSignupPage, _accountInfoPage;
 

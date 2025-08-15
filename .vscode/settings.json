@@ -1,12 +1,16 @@
 {
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact"
-  ],
+  "eslint.validate": ["javascript", "javascriptreact"],
   "eslint.useFlatConfig": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit"
   },
+  "cucumberautocomplete.steps": [
+    "cypress/e2e/step-definitions/**/*.js"
+  ],
+  "cucumberautocomplete.syncfeatures": "cypress/e2e/features/**/*.feature",
+  "cucumberautocomplete.strictGherkinCompletion": true,
+  "cucumberautocomplete.smartSnippets": true,
+  "cucumberautocomplete.stepsInvariants": true,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "prettier.requireConfig": true,
@@ -14,13 +18,19 @@
   "cSpell.words": [
     "Automatio",
     "badeball",
+    "badpass",
+    "bahmutov",
+    "cityslicka",
     "democypressframework",
+    "Dockerized",
     "elif",
+    "ENOENT",
     "Gonella",
     "Happo",
     "mochawesome",
     "optin",
     "pytest",
+    "sess",
     "signup",
     "winappdriver"
   ]

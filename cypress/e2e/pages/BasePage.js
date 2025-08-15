@@ -8,7 +8,7 @@ class BasePage {
    * Navigate to a URL.
    * @param {string} path - The URL path to visit (defaults to '/').
    */
-  visit(path = "/") {
+  visit(path = '/') {
     cy.visit(path);
   }
 

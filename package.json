@@ -24,48 +24,52 @@
     "clean:report": "rimraf cypress/reports/html/screenshots cypress/reports/html/videos",
     "test:headed:clean": "npm run test:headed && npm run clean:report",
     "test:parallel:browsers": "concurrently \"npm run test:chrome\" \"npm run test:edge\"",
-    "lint": "eslint cypress/e2e cypress/support",
-    "lint:fix": "eslint cypress/e2e cypress/support --fix",
-    "format": "prettier \"**/*.{js,json,md}\" --write",
+    "lint": "eslint \"cypress/{e2e,support}/**/*.{js,ts}\"",
+    "lint:fix": "eslint \"cypress/{e2e,support}/**/*.{js,ts}\" --fix",
+    "format": "prettier \"**/*.{js,ts,json,md}\" --write",
     "fix:all": "npm run lint:fix && npm run format",
     "prepare": "husky install",
     "generate:locators": "node scripts/locator-extractor.js",
-    "test:api": "npx cypress run --spec 'cypress/e2e/tests/api/**/*.cy.js'",
+    "test:api": "cypress run --spec \"cypress/e2e/tests/api/**/*.cy.js\"",
     "merge:reports": "mochawesome-merge cypress/reports/json/*.json > cypress/reports/html/mochawesome.json",
     "report:open": "marge cypress/reports/html/mochawesome.json --reportDir cypress/reports/html --inline",
-    "report:full": "npm run merge:reports && npm run report:open"
+    "report:full": "npm run merge:reports && npm run report:open",
+    "debug:cucumber": "cross-env DEBUG=@badeball/cypress-cucumber-preprocessor* cypress open"
   },
   "lint-staged": {
-    "cypress/e2e/**/*.js": [
+    "cypress/e2e/**/*.{js,ts}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "cypress/support/**/*.js": [
+    "cypress/support/**/*.{js,ts}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "src/**/*.js": [
+    "src/**/*.{js,ts}": [
       "eslint --fix",
       "prettier --write"
     ]
   },
   "devDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^22.2.0",
+    "@badeball/cypress-cucumber-preprocessor": "^15.1.5",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.5",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@cucumber/cucumber": "^12.1.0",
-    "@cypress/webpack-preprocessor": "^7.0.0",
     "@faker-js/faker": "^9.9.0",
+    "@typescript-eslint/parser": "^8.39.1",
     "@vitejs/plugin-react": "^4.7.0",
     "concurrently": "^9.2.0",
+    "cross-env": "^7.0.3",
     "cypress": "^14.5.4",
-    "cypress-dotenv": "^3.0.1",
     "cypress-image-snapshot": "^4.0.1",
     "cypress-multi-reporters": "^2.0.5",
     "dotenv": "^17.2.1",
+    "esbuild": "^0.25.9",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-cypress": "^5.1.0",
+    "eslint-plugin-deprecation": "^3.0.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsdoc": "^52.0.4",
     "eslint-plugin-prettier": "^5.5.4",
@@ -77,24 +81,18 @@
     "mochawesome-report-generator": "^6.2.0",
     "multiple-cucumber-html-reporter": "^3.9.3",
     "prettier": "^3.6.2",
+    "rimraf": "^5.0.1",
     "start-server-and-test": "^2.0.0",
     "typescript": "^5.9.2",
     "vite": "^4.5.14"
-  },
-  "cypress-cucumber-preprocessor": {
-    "nonGlobalStepDefinitions": true,
-    "stepDefinitions": "cypress/support/step_definitions",
-    "cucumberJson": {
-      "generate": true,
-      "outputFolder": "cypress/reports/cucumber-json",
-      "filePrefix": "cucumber-report-",
-      "fileSuffix": ".json"
-    }
   },
   "dependencies": {
     "minimist": "^1.2.8",
     "puppeteer": "^24.16.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
+  },
+  "cypress-cucumber-preprocessor": {
+    "stepDefinitions": "cypress/e2e/step-definitions/**/*.{js,ts}"
   }
 }

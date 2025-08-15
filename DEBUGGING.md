@@ -9,13 +9,13 @@ This guide covers four practical ways to debug Cypress tests effectively. Whethe
 Use `cy.pause()` to pause a test mid-execution and inspect everything inside the Cypress Test Runner.
 
 ```js
-it("should pause for inspection", () => {
-  cy.visit("/");
-  cy.get("#username").type("tim");
+it('should pause for inspection', () => {
+  cy.visit('/');
+  cy.get('#username').type('tim');
 
   cy.pause(); // Pauses test here
 
-  cy.get("#password").type("secret");
+  cy.get('#password').type('secret');
 });
 ```
 
@@ -57,10 +57,10 @@ If you want to use it:
 Use the JavaScript `debugger` statement to pause execution and open Chrome DevTools for full variable inspection and code stepping.
 
 ```js
-it("should let me inspect variables", () => {
+it('should let me inspect variables', () => {
   const user = generateUser();
   debugger; // Triggers DevTools pause
-  cy.visit("/");
+  cy.visit('/');
 });
 ```
 
@@ -96,7 +96,7 @@ Use logging to output info without interrupting test flow.
 ```js
 const user = generateUser();
 cy.log(`Using name: ${user.name}`);
-console.log("DEBUG - full user:", user);
+console.log('DEBUG - full user:', user);
 ```
 
 - `cy.log()` outputs to the Cypress Command Log
@@ -105,8 +105,8 @@ console.log("DEBUG - full user:", user);
 Use `cy.then()` if you want to log values from Cypress commands:
 
 ```js
-cy.get("#username").then(($el) => {
-  console.log("Username input element:", $el);
+cy.get('#username').then(($el) => {
+  console.log('Username input element:', $el);
 });
 ```
 
@@ -117,8 +117,8 @@ cy.get("#username").then(($el) => {
 Use `cy.then()` to run custom JavaScript at specific points in the command chain.
 
 ```js
-cy.get("#email").then(($email) => {
-  console.log("Email value:", $email.val());
+cy.get('#email').then(($email) => {
+  console.log('Email value:', $email.val());
 });
 ```
 
@@ -128,7 +128,7 @@ cy.get("#email").then(($email) => {
 You can combine it with `debugger;` if needed:
 
 ```js
-cy.get("#submit").then(() => {
+cy.get('#submit').then(() => {
   debugger;
 });
 ```
