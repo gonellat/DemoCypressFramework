@@ -1,28 +1,21 @@
 // @ts-check
-/**
- * Cypress ESM config compatible with CommonJS plugins on Windows.
- * - Imports are alphabetized within the combined builtin+external group.
- * - No empty lines inside the import group (per eslint-plugin-import/order).
- */
+/// <reference types="cypress" />
 
+import { defineConfig } from 'cypress';
+import fs from 'fs';
 import cucumberPreprocessor from '@badeball/cypress-cucumber-preprocessor';
 import esbuildInterop from '@badeball/cypress-cucumber-preprocessor/esbuild';
 import createBundler from '@bahmutov/cypress-esbuild-preprocessor';
-import { defineConfig } from 'cypress';
 import imageSnapshotPlugin from 'cypress-image-snapshot/plugin';
-import fs from 'fs';
+import sqlServer from 'cypress-sql-server';
 
-// CJS: default export is an object; destructure the function we need
 const { addCucumberPreprocessorPlugin } = cucumberPreprocessor;
+const { addMatchImageSnapshotPlugin } = imageSnapshotPlugin;
 
-// CJS interop: the default export may be a function OR an object with { createEsbuildPlugin }.
-// We cast to `any` first so VS Code stops complaining, while keeping runtime correct.
-/** @type {any} */ const _esb = esbuildInterop;
+/** @type {any} */
+const _esb = esbuildInterop;
 /** @type {(cfg: Cypress.PluginConfigOptions) => import('esbuild').Plugin} */
 const createEsbuildPlugin = _esb?.createEsbuildPlugin ?? _esb;
-
-// CJS: default export is an object; destructure the function we need
-const { addMatchImageSnapshotPlugin } = imageSnapshotPlugin;
 
 /**
  * Load environment variables from env/.env.<envName>.
@@ -39,7 +32,6 @@ async function getEnvConfig(envName) {
  * Validate required environment keys.
  * @param {Record<string, any>} env
  * @param {string[]} requiredKeys
- * @returns {void}
  */
 function validateEnvKeys(env, requiredKeys = []) {
   const missing = requiredKeys.filter((k) => !env[k]);
@@ -54,6 +46,7 @@ export default defineConfig({
   viewportHeight: 1080,
   retries: { runMode: 0, openMode: 0 },
   projectId: 'ProjectExample',
+
   env: {
     configEnv: 'local',
     url: 'https://example.cypress.io/',
@@ -61,22 +54,39 @@ export default defineConfig({
     grepOmitFiltered: true,
     stepDefinitions: 'cypress/e2e/step-definitions/**/*.{js,ts}',
   },
+
   reporter: 'cypress-multi-reporters',
-  reporterOptions: { configFile: 'multi-reporter-config.json' },
+  reporterOptions: {
+    configFile: 'multi-reporter-config.json',
+  },
 
   e2e: {
+    experimentalStudio: true,
     screenshotsFolder: 'cypress/screenshots',
     videosFolder: 'cypress/videos',
 
     /**
-     * Node-side plugin setup.
+     * Node plugin setup
      * @param {Cypress.PluginEvents} on
      * @param {Cypress.PluginConfigOptions} config
-     * @returns {Promise<Cypress.PluginConfigOptions>} Resolved Cypress config
+     * @returns {Promise<Cypress.PluginConfigOptions>}
      */
     async setupNodeEvents(on, config) {
+      /** @type {any} */
+      const dbConfig = {
+        userName: 'CloudSAce7e739a',
+        password: 'CypressD@tabase123',
+        server: 'cypressservertg.database.windows.net',
+        options: {
+          database: 'CypressDatabase',
+          encrypt: true,
+          rowCollectionOnRequestCompletion: true,
+        },
+      };
+
       const envName = config.env.configEnv || 'local';
       const loaded = await getEnvConfig(envName);
+
       config.env = {
         ...config.env,
         ...loaded,
@@ -86,17 +96,18 @@ export default defineConfig({
       config.baseUrl = config.env.url;
       validateEnvKeys(config.env, ['url']);
 
-      // Cucumber preprocessor (must run before file:preprocessor)
+      // Register SQL Server task
+      on('task', sqlServer.loadDBPlugin(dbConfig));
+
+      // Cucumber plugin
       await addCucumberPreprocessorPlugin(on, config);
 
-      // esbuild preprocessor with the Cucumber esbuild plugin
-      /** @type {import('esbuild').Plugin} */
+      // Esbuild plugin
       const cucumberEsbuildPlugin = createEsbuildPlugin(config);
 
       on(
         'file:preprocessor',
         createBundler({
-          /** @type {import('esbuild').Plugin[]} */
           plugins: [cucumberEsbuildPlugin],
         })
       );
@@ -112,7 +123,10 @@ export default defineConfig({
   },
 
   component: {
-    devServer: { framework: 'react', bundler: 'vite' },
+    devServer: {
+      framework: 'react',
+      bundler: 'vite',
+    },
     specPattern: 'cypress/component/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: 'cypress/support/component.js',
   },

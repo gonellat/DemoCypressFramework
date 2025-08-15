@@ -2,6 +2,7 @@
 /// <reference types="cypress" />
 
 import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
+import 'cypress-sql-server'; // Enables the plugin globally
 
 /**
  * Match Image Snapshot plugin options are not exported as types in JS,
@@ -97,18 +98,25 @@ Cypress.Commands.add(
 
     const disabled = Cypress.env('visualTesting') === false || opts.skip === true;
     if (disabled) {
-      // Skip branch: return Chainable<void> (no TS generic)
       return cy.then(() => {
         cy.log(`📷 Skipping visual snapshot: ${name}`);
       });
     }
 
-    // Remove our custom "skip" flag before passing to the plugin
     const { skip: _skip, ...snapshotOpts } = opts;
-    void _skip; // appease no-unused-vars
+    void _skip;
 
-    // Use cypress-image-snapshot; keep chain type as void.
     cy.matchImageSnapshot(name, /** @type {unknown} */ (snapshotOpts));
     return cy.then(() => {});
   }
 );
+
+/**
+ * Run a SQL Server query via cy.task().
+ * @function sqlServer
+ * @param {string} query - SQL query string
+ * @returns {Cypress.Chainable<any>}
+ */
+Cypress.Commands.add('sqlServer', (query) => {
+  return cy.task('sqlServer', query);
+});

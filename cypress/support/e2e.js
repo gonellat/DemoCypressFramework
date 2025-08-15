@@ -1,6 +1,9 @@
 // @ts-check
 /// <reference types="cypress" />
 
+const sqlServer = require('cypress-sql-server');
+sqlServer.loadDBCommands();
+
 /**
  * Support file is auto-loaded before every spec.
  * Import custom commands FIRST so they’re registered before tests run.

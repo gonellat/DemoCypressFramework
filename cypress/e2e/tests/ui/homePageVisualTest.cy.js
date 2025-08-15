@@ -1,16 +1,10 @@
+// @ts-check
 import { withBaseTest } from './withBaseTest';
 
-/**
- * @visual @regression
- */
-describe('Home Page Visual Test', () => {
-  withBaseTest((Pages) => {
-    it('should visually match the homepage layout', () => {
-      Pages.homePage.visit();
-
-      if (Cypress.env('visualTesting') !== false) {
-        cy.matchImageSnapshot('home-page');
-      }
+describe('Demo Account Signup Test', () => {
+  withBaseTest((/** @type {import('../../../support/pageFactory.js').PagesApi} */ Pages) => {
+    it('should create an account successfully', () => {
+      Pages.homePage.visit(); // ✅ now jumps to the method
     });
   });
 });

@@ -1,4 +1,3 @@
-// types/cypress-commands.d.ts
 /// <reference types="cypress" />
 
 declare namespace Cypress {
@@ -26,5 +25,13 @@ declare namespace Cypress {
     logStep(message: string): Chainable<void>;
     clearSession(): Chainable<void>;
     captureStep(label: string): Chainable<void>;
+
+    /**
+     * Run a SQL Server query using a configured database connection.
+     * @param query SQL query string
+     * @example
+     *   cy.sqlServer('SELECT * FROM Users')
+     */
+    sqlServer(query: string): Chainable<any>;
   }
 }

@@ -132,6 +132,7 @@ npm run test:edge         # Edge only
 ├── types/
 │   └── cypress-commands.d.ts         # TypeScript IntelliSense for custom Cypress commands
 ├── env/                              # Environment variable files (.env.local, .env.stage, etc.)
+├── Javascript code files             # Example code files like looping etc.
 ├── package.json                      # Project dependencies, scripts, and metadata
 ├── cypress.config.js                 # Cypress configuration file (ESM format)
 ├── tsconfig.json                     # TypeScript configuration for Cypress + project files
@@ -159,7 +160,7 @@ npm run test:edge         # Edge only
 - ✅ Page Object Model with Page Factory and BaseTest to centralize setup/teardown and remove boilerplate from every test file
 - ✅ Visual regression testing with cy.visualSnapshot() and threshold support
 - ✅ Component Testing support using Cypress + Vite + React
-- ✅ API testing support with shared fixtures and helper methods
+- ✅ API testing inc. mocking with support with shared fixtures and helper methods
 - ✅ Dockerized test runner with baked-in config and CLI override support
 - ✅ **Cucumber BDD** with \`.feature\` + step definitions
 - ✅ **CLI utility to auto-generate Page Object files from a web page** (see below)
@@ -501,7 +502,6 @@ This ensures:
 
 ## 🔧 To Do / Future Enhancements
 
-- ⬜ Api mocking
 - ⬜ Dealing with controls
 
 ---

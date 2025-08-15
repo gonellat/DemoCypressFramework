@@ -20,7 +20,7 @@
     "test": "cypress run",
     "test:chrome": "cypress run --headed --browser chrome --env configEnv=local --reporter-options reportDir=cypress/reports/chrome",
     "test:edge": "cypress run --headed --browser edge --env configEnv=local --reporter-options reportDir=cypress/reports/edge",
-    "test:headed": "cls && cypress run --headed --browser chrome --env configEnv=local",
+    "test:headed": "echo Running Cypress Headed Chrome && cypress run --headed --browser chrome --env configEnv=local",
     "clean:report": "rimraf cypress/reports/html/screenshots cypress/reports/html/videos",
     "test:headed:clean": "npm run test:headed && npm run clean:report",
     "test:parallel:browsers": "concurrently \"npm run test:chrome\" \"npm run test:edge\"",
@@ -31,10 +31,15 @@
     "prepare": "husky install",
     "generate:locators": "node scripts/locator-extractor.js",
     "test:api": "cypress run --spec \"cypress/e2e/tests/api/**/*.cy.js\"",
+    "test:single": "cypress run --spec \"%cd%/cypress/e2e/tests/ui/demoTest.cy.js\" --env configEnv=local",
     "merge:reports": "mochawesome-merge cypress/reports/json/*.json > cypress/reports/html/mochawesome.json",
     "report:open": "marge cypress/reports/html/mochawesome.json --reportDir cypress/reports/html --inline",
     "report:full": "npm run merge:reports && npm run report:open",
-    "debug:cucumber": "cross-env DEBUG=@badeball/cypress-cucumber-preprocessor* cypress open"
+    "debug:cucumber": "cross-env DEBUG=@badeball/cypress-cucumber-preprocessor* cypress open",
+    "test:cucumber": "cypress run --headed --browser chrome --spec \"cypress/e2e/**/*.feature\" --env \"tags=@ContactTest,filterSpecs=true,omitFiltered=true\"",
+    "test:cucumbersmoke": "cypress run --headed --browser chrome --spec \"cypress/e2e/**/*.feature\" --env \"tags=@Smoke,configEnv=sample,filterSpecs=true,omitFiltered=true\"",
+    "report:cucumber": "node ./cucumber-html-report.mjs",
+    "test:cucumber:with-report": "npm run test:smoke && npm run report:smoke"
   },
   "lint-staged": {
     "cypress/e2e/**/*.{js,ts}": [
@@ -64,6 +69,7 @@
     "cypress": "^14.5.4",
     "cypress-image-snapshot": "^4.0.1",
     "cypress-multi-reporters": "^2.0.5",
+    "cypress-sql-server": "^1.0.0",
     "dotenv": "^17.2.1",
     "esbuild": "^0.25.9",
     "eslint": "^9.29.0",
@@ -93,6 +99,8 @@
     "react-dom": "^19.1.1"
   },
   "cypress-cucumber-preprocessor": {
+    "filterSpecs": true,
+    "omitFiltered": true,
     "stepDefinitions": "cypress/e2e/step-definitions/**/*.{js,ts}"
   }
 }
